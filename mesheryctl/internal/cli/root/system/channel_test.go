@@ -84,7 +84,18 @@ func TestViewCmd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
-			SetupFunc()
+			// SetupFunc()
+
+			// Works
+			// b = bytes.NewBufferString("")
+			// logrus.SetOutput(b)
+			// utils.SetupLogrusFormatter()
+			// SystemCmd.SetOut(b)
+
+			//Replacement to use Meshkit Logger from other tests, fails for this case
+			b := utils.SetupMeshkitLoggerTesting(t, false)
+			SystemCmd.SetOutput(b)
+
 			SystemCmd.SetArgs(tt.Args)
 			err = SystemCmd.Execute()
 			if err != nil {
@@ -94,6 +105,10 @@ func TestViewCmd(t *testing.T) {
 			actualResponse := b.String()
 			expectedResponse := tt.ExpectedResponse
 
+			t.Log("actualResponse")
+			t.Log(actualResponse)
+			t.Log("expectedResponse")
+			t.Log(expectedResponse)
 			if expectedResponse != actualResponse {
 				t.Errorf("expected response %v and actual response %v don't match", expectedResponse, actualResponse)
 			}
